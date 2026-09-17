@@ -1,28 +1,29 @@
 <?php
-ini_set('display_erros', 1); ini_set('display_startup_erros', 1); erros_reporting(E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-//verifica se existe conexao com bd, caso nao tenta criar uma nova
-$conexao = mysqli_connect("localhost","rennan","012831")//porta, usuario, senha
-or die("erro na conexao com o banco de dados"); //caso nao consiga conectar mostra a 
-                                                // mensagem de erro mostrada 
-          
-$select_db = mysqli_select_db($conexao, "novo"); // seleciona o banco de dados 
+require_once 'pessoa.php';
 
-//abaixo atribuimos os valores provenientes do formulario pelo metodo post 
-$nome = $_POST["nome"];
-$user = $_POST["user"];
-$email = $_POST["email"];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nome = $POST["nome"] ?? '';
+    $user = $POST["user"] ?? '';
+    $email = $POST["email"] ?? '';
 
-$string_sql = "insert into pessoa (id,nome,user,email) values (null,'$nome','$user','$email')";
+    $pessoa = new Pessoa ($nome, $user, $email);
 
-mysqli_query($conexao, $string_sql); //realiza a consulta 
-
-if(mysqli_affected_rows($conexao) == 1){
-    echo "<p>Cadastro feito com sucesso<p/>";
-    echo '<a href="index.html">voltar para pagina principal da empresa</a>';
+    if ($pessoa->inserir()) {
+        echo "<p>Cadastro feito com sucesso</p><br/>";
+        echo '<a href="index.html">Voltar para home</a><br/>';
+        header("refresh:3;url=index.html");
+        echo 'Redirecionando a pagina em 3 segudos!';
+    } else {
+        echo "Erro, nao foi possivel inserir no banco de dados<br/>";
+        header("refresh:3;url=index.php");
+        echo 'Redirecionado a pagina em 3 segundos!';
+    }
 } else {
-    echo "erro, nao foi possivel inserir no banco de dados";
+    header("Location: index.php");
+    exit();
 }
-
-mysqli_close($conexao); //fecha conexao com banco de dados 
 ?>
