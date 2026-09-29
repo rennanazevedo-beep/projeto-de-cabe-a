@@ -6,9 +6,9 @@ error_reporting(E_ALL);
 require_once 'pessoa.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $nome = $POST["nome"] ?? '';
-    $user = $POST["user"] ?? '';
-    $email = $POST["email"] ?? '';
+    $nome = $_POST["nome"] ?? '';
+    $user = $_POST["user"] ?? '';
+    $email = $_POST["email"] ?? '';
 
     $pessoa = new Pessoa ($nome, $user, $email);
 

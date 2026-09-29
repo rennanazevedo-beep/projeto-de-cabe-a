@@ -44,5 +44,62 @@
         }
                     
     }
+
+    public static function deletar($id) {
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+        if ($id === false || $id === null) {
+            return false;
+        }
+
+        try {
+            $pdo = Conexao::getConexao();
+            $stmt = $pdo->prepare("DELETE FROM pessoa WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+
+            return $stmt->rowCount() > 0;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public static function buscarPorId($id) {
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+        if ($id === false || $id === null) {
+            return false;
+        }
+
+        try {
+            $pdo = Conexao::getConexao();
+            $stmt = $pdo->prepare("SELECT * FROM pessoa WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+
+            return $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public static function atualizar($id, $nome, $user, $email) {
+        $id = filter_var($id, FILTER_VALIDATE_INT);
+        if ($id === false || $id === null) {
+            return false;
+        }
+
+        try {
+            $pdo = Conexao::getConexao();
+            $stmt = $pdo->prepare(
+                "UPDATE pessoa SET nome = :nome, user = :user, email = :email WHERE id = :id"
+            );
+
+            return $stmt->execute([
+                ':id' => $id,
+                ':nome' => $nome,
+                ':user' => $user,
+                ':email' => $email,
+            ]);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
 }
 ?>
